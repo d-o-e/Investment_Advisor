@@ -4,25 +4,29 @@
  */
 
 #include "MutualFund.hpp"
+#include <thread>
+#include <iostream>
 
 using namespace std;
 
 void shuffleNavHistoryFile(const string &filename);
+
 void analyze2Funds(MutualFund &one, MutualFund &two);
 
 int main() {
-  string ticker1 = "VFIAX";
-  string ticker2 = "VTSAX";
+    string ticker1 = "VFIAX";
+    string ticker2 = "VTSAX";
 
-  //	TODO:Create 2 threads to process 2 items concurrently
+    thread t1(&shuffleNavHistoryFile, ticker1);
+    thread t2(&shuffleNavHistoryFile, ticker2);
+    t1.join();
+    t2.join();
+    MutualFund vfiax(ticker1);
+    MutualFund vtsax(ticker2);
+    vtsax.report();
+    vfiax.report();
+    analyze2Funds(vfiax, vtsax);
 
-  shuffleNavHistoryFile(ticker1);
-  MutualFund vfiax(ticker1);
-  vfiax.report();
-  cout << endl;
-  shuffleNavHistoryFile(ticker2);
-  MutualFund vtsax(ticker2);
-  vtsax.report();
-  analyze2Funds(vfiax, vtsax);
-  return 0;
+
+    return 0;
 }
